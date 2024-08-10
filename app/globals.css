@@ -285,6 +285,13 @@ img {
   flex-direction: column; /* Stack text vertically */
 }
 
+/* app/globals.css */
+.chart-container {
+  width: 100%;
+  height: 25rem; /* Adjust height as needed */
+  margin-bottom: 1rem;
+}
+
 .beta-label {
   position: absolute;
   top: 0.5rem;
