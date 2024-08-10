@@ -15,14 +15,16 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
     const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
     const [nextRefresh, setNextRefresh] = useState<Date | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [playerData, setPlayerData] = useState<{ time: string, totalPlayers: number, serverIp: string }[]>([]);
+    const [playerData, setPlayerData] = useState<{ time: string, totalPlayers: number, serverIp: string }[]>(() => {
+        const savedPlayerData = localStorage.getItem('playerData');
+        return savedPlayerData ? JSON.parse(savedPlayerData) : [];
+    });
     const [averagePlayers, setAveragePlayers] = useState<number>(0);
     const [bestServer, setBestServer] = useState<string>('');
 
     useEffect(() => {
         const savedLastRefresh = localStorage.getItem('lastRefresh');
         const savedNextRefresh = localStorage.getItem('nextRefresh');
-        const savedPlayerData = localStorage.getItem('playerData');
 
         if (savedLastRefresh) {
             setLastRefresh(new Date(savedLastRefresh));
@@ -30,10 +32,6 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
 
         if (savedNextRefresh) {
             setNextRefresh(new Date(savedNextRefresh));
-        }
-
-        if (savedPlayerData) {
-            setPlayerData(JSON.parse(savedPlayerData));
         }
 
         const fetchStatuses = async () => {
