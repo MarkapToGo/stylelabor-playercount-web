@@ -17,6 +17,14 @@
   }
 }
 
+.text-light-red {
+  color: #ffcccc;
+}
+
+.text-light-green {
+  color: #ccffcc;
+}
+
 .text-orange {
   color: orange;
 }
@@ -36,7 +44,8 @@ img {
   image-rendering: optimizeQuality;
 }
 
-/* Add styles for the floating button */
+
+/* styles for the floating button */
 .fixed {
   position: fixed;
 }

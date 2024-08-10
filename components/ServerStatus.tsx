@@ -13,14 +13,33 @@ interface ServerStatusProps {
 const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, setTotalPlayers }) => {
     const [statuses, setStatuses] = useState<any[]>([]);
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+    const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+    const [nextRefresh, setNextRefresh] = useState<Date | null>(null);
 
     useEffect(() => {
+        const savedLastRefresh = localStorage.getItem('lastRefresh');
+        const savedNextRefresh = localStorage.getItem('nextRefresh');
+
+        if (savedLastRefresh) {
+            setLastRefresh(new Date(savedLastRefresh));
+        }
+
+        if (savedNextRefresh) {
+            setNextRefresh(new Date(savedNextRefresh));
+        }
+
         const fetchStatuses = async () => {
             try {
                 const data = await Promise.all(serverIps.map(ip => getServerStatus(ip)));
                 setStatuses(data);
                 const totalPlayers = data.reduce((sum, status) => sum + (status.online ? status.players.online : 0), 0);
                 setTotalPlayers(totalPlayers);
+                const now = new Date();
+                const next = new Date(now.getTime() + 60000); // Next refresh in 1 minute
+                setLastRefresh(now);
+                setNextRefresh(next);
+                localStorage.setItem('lastRefresh', now.toISOString());
+                localStorage.setItem('nextRefresh', next.toISOString());
             } catch (error) {
                 console.error('Error fetching statuses:', error);
             }
@@ -71,6 +90,10 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div className="col-span-full mb-4">
+                <p className="text-light-red">Last Refresh: {lastRefresh ? lastRefresh.toLocaleTimeString() : 'Never'}</p>
+                <p className="text-light-green">Next Refresh: {nextRefresh ? nextRefresh.toLocaleTimeString() : 'Calculating...'}</p>
+            </div>
             {statuses.map((status, index) => (
                 <div key={index} className="mb-8 relative server-container">
                     {status.icon && <Image src={status.icon} alt="Server Icon" width={192} height={192} className="mx-auto mb-4 rounded-lg" />}
