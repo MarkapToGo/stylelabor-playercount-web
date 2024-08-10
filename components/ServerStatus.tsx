@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getServerStatus } from '@/services/minecraftService';
 import Image from 'next/image';
 import PlayerChart from './PlayerChart';
+import '../app/globals.css'; // Ensure the CSS file is imported
 
 interface ServerStatusProps {
     serverIps: string[];
@@ -58,8 +59,6 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                 });
             } catch (error) {
                 console.error('Error fetching statuses:', error);
-                 // Replace with actual condition if needed
-                console.log(error);
             } finally {
                 setLoading(false);
             }
@@ -176,6 +175,7 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                     <PlayerChart data={playerData} />
                 </div>
                 <div className="last-7-days-box text-center">
+                    <span className="beta-label">BETA</span>
                     <p>Average Players (Last 7 Days): {averagePlayers.toFixed(2)}</p>
                     <p>Best Server (Last 7 Days): {bestServer}</p>
                 </div>
