@@ -166,10 +166,12 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                     </div>
                 ))}
             </div>
-            <div style={{ width: '30rem', height: '20rem', margin: '0 auto' }}>
+            <div className="beta-box" style={{ width: '30rem', height: '20rem', margin: '0 auto' }}>
+                <span className="beta-label">BETA</span>
                 <PlayerChart data={playerData} />
             </div>
-            <div className="text-center mt-4">
+            <div className="beta-box text-center mt-4">
+                <span className="beta-label">BETA</span>
                 <p className="text-light-green">Average Players (Last 7 Days): {averagePlayers.toFixed(2)}</p>
                 <p className="text-light-green">Best Server (Last 7 Days): {bestServer}</p>
             </div>

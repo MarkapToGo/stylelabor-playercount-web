@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PlayerCount - StyleLabor",
+  title: "Statistics - StyleLabor",
   description: "Coded by Markap for StyleLabor",
 };
 

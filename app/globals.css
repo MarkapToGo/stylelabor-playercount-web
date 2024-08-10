@@ -189,6 +189,22 @@ img {
   font-weight: normal;
 }
 
+.beta-box {
+  position: relative;
+  background-color: pink;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.beta-label {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-weight: bold;
+  color: antiquewhite;
+}
+
 .text-orange {
   color: orange;
 }
