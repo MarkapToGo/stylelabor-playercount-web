@@ -16,6 +16,7 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
     const [nextRefresh, setNextRefresh] = useState<Date | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [playerData, setPlayerData] = useState<{ time: string, totalPlayers: number }[]>([]);
+    const [averagePlayers, setAveragePlayers] = useState<number>(0);
 
     useEffect(() => {
         const savedLastRefresh = localStorage.getItem('lastRefresh');
@@ -51,8 +52,9 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                 // Update player data for chart
                 setPlayerData(prevData => {
                     const newData = [...prevData, { time: now.toLocaleTimeString(), totalPlayers }];
-                    localStorage.setItem('playerData', JSON.stringify(newData));
-                    return newData;
+                    const filteredData = newData.filter(data => new Date(data.time).getTime() > now.getTime() - 7 * 24 * 60 * 60 * 1000); // Last 7 days
+                    localStorage.setItem('playerData', JSON.stringify(filteredData));
+                    return filteredData;
                 });
             } catch (error) {
                 console.error('Error fetching statuses:', error);
@@ -67,6 +69,15 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
 
         return () => clearInterval(intervalId); // Clear interval on component unmount
     }, [serverIps, setTotalPlayers]);
+
+    useEffect(() => {
+        // Calculate the average player count over the last 7 days
+        const now = new Date();
+        const filteredData = playerData.filter(data => new Date(data.time).getTime() > now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const totalPlayers = filteredData.reduce((sum, data) => sum + data.totalPlayers, 0);
+        const average = filteredData.length > 0 ? totalPlayers / filteredData.length : 0;
+        setAveragePlayers(average);
+    }, [playerData]);
 
     const copyToClipboard = (serverIp: string, index: number) => {
         navigator.clipboard.writeText(serverIp)
@@ -134,7 +145,12 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                     </div>
                 ))}
             </div>
-            <PlayerChart data={playerData} />
+            <div style={{ width: '30rem', height: '20rem', margin: '0 auto' }}>
+                <PlayerChart data={playerData} />
+            </div>
+            <div className="text-center mt-4">
+                <p className="text-light-green">Average Players (Last 7 Days): {averagePlayers.toFixed(2)}</p>
+            </div>
         </div>
     );
 };
