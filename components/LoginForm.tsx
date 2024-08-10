@@ -1,5 +1,6 @@
 // components/LoginForm.tsx
 import React, { useState } from 'react';
+import '../app/globals.css'; // Ensure the CSS file is imported
 
 interface LoginFormProps {
     setIsLoggedIn: (isLoggedIn: boolean) => void;
@@ -13,7 +14,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ setIsLoggedIn }) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Add your login logic here
-        if (username === 'admin' && password === 'password') {
+        if (username === 'admin' && password === 'stylelabor1234') {
             setIsLoggedIn(true);
         } else {
             setError('Invalid username or password');
@@ -29,12 +30,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ setIsLoggedIn }) => {
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    className="input-black-text"
                 />
                 <input
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="input-black-text"
                 />
                 <button type="submit">Login</button>
                 {error && <p className="error">{error}</p>}
