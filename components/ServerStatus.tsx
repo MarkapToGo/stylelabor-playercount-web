@@ -20,6 +20,7 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
     useEffect(() => {
         const savedLastRefresh = localStorage.getItem('lastRefresh');
         const savedNextRefresh = localStorage.getItem('nextRefresh');
+        const savedPlayerData = localStorage.getItem('playerData');
 
         if (savedLastRefresh) {
             setLastRefresh(new Date(savedLastRefresh));
@@ -27,6 +28,10 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
 
         if (savedNextRefresh) {
             setNextRefresh(new Date(savedNextRefresh));
+        }
+
+        if (savedPlayerData) {
+            setPlayerData(JSON.parse(savedPlayerData));
         }
 
         const fetchStatuses = async () => {
@@ -44,7 +49,11 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                 localStorage.setItem('nextRefresh', next.toISOString());
 
                 // Update player data for chart
-                setPlayerData(prevData => [...prevData, { time: now.toLocaleTimeString(), totalPlayers }]);
+                setPlayerData(prevData => {
+                    const newData = [...prevData, { time: now.toLocaleTimeString(), totalPlayers }];
+                    localStorage.setItem('playerData', JSON.stringify(newData));
+                    return newData;
+                });
             } catch (error) {
                 console.error('Error fetching statuses:', error);
             } finally {
