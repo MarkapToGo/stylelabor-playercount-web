@@ -15,8 +15,9 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
     const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
     const [nextRefresh, setNextRefresh] = useState<Date | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [playerData, setPlayerData] = useState<{ time: string, totalPlayers: number }[]>([]);
+    const [playerData, setPlayerData] = useState<{ time: string, totalPlayers: number, serverIp: string }[]>([]);
     const [averagePlayers, setAveragePlayers] = useState<number>(0);
+    const [bestServer, setBestServer] = useState<string>('');
 
     useEffect(() => {
         const savedLastRefresh = localStorage.getItem('lastRefresh');
@@ -51,7 +52,7 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
 
                 // Update player data for chart
                 setPlayerData(prevData => {
-                    const newData = [...prevData, { time: now.toLocaleTimeString(), totalPlayers }];
+                    const newData = [...prevData, { time: now.toLocaleTimeString(), totalPlayers, serverIp: serverIps[0] }];
                     const filteredData = newData.filter(data => new Date(data.time).getTime() > now.getTime() - 7 * 24 * 60 * 60 * 1000); // Last 7 days
                     localStorage.setItem('playerData', JSON.stringify(filteredData));
                     return filteredData;
@@ -77,6 +78,26 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
         const totalPlayers = filteredData.reduce((sum, data) => sum + data.totalPlayers, 0);
         const average = filteredData.length > 0 ? totalPlayers / filteredData.length : 0;
         setAveragePlayers(average);
+
+        // Calculate the best server
+        const serverPlayerCounts: { [key: string]: number[] } = {};
+        filteredData.forEach(data => {
+            if (!serverPlayerCounts[data.serverIp]) {
+                serverPlayerCounts[data.serverIp] = [];
+            }
+            serverPlayerCounts[data.serverIp].push(data.totalPlayers);
+        });
+
+        let bestServerIp = '';
+        let highestAverage = 0;
+        for (const serverIp in serverPlayerCounts) {
+            const average = serverPlayerCounts[serverIp].reduce((sum, count) => sum + count, 0) / serverPlayerCounts[serverIp].length;
+            if (average > highestAverage) {
+                highestAverage = average;
+                bestServerIp = serverIp;
+            }
+        }
+        setBestServer(bestServerIp);
     }, [playerData]);
 
     const copyToClipboard = (serverIp: string, index: number) => {
@@ -150,6 +171,7 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
             </div>
             <div className="text-center mt-4">
                 <p className="text-light-green">Average Players (Last 7 Days): {averagePlayers.toFixed(2)}</p>
+                <p className="text-light-green">Best Server (Last 7 Days): {bestServer}</p>
             </div>
         </div>
     );
