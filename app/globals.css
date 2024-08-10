@@ -142,7 +142,7 @@ img {
 /*  styles for the input field */
 .input-light-blue {
   background-color: #e0f7fa; /* Light blue background */
-  padding: 0.5rem; /* Padding for better appearance */
+  padding: 0.5rem; /* Padding */
   border: 1px solid #3b82f6; /* Border color matching the button */
   border-radius: 0.375rem; /* Rounded corners */
   color: #000000; /* Dark text color for better visibility */
