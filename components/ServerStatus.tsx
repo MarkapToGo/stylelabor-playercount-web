@@ -112,7 +112,7 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                     <h1 className="text-3xl font-bold">{getSubdomain(serverIps[index])}</h1>
                     <p className="cursor-pointer" onClick={() => copyToClipboard(serverIps[index], index)}>
                         Server IP: <span
-                        className={`underline ${serverIps[index].length > 20 ? 'text-small' : ''} ${copiedIndex === index ? 'text-orange' : ''}`}>{copiedIndex === index ? 'Copied!' : serverIps[index]}</span>
+                        className={`underline ${serverIps[index] && serverIps[index].length > 20 ? 'text-small' : ''} ${copiedIndex === index ? 'text-orange' : ''}`}>{copiedIndex === index ? 'Copied!' : serverIps[index]}</span>
                     </p>
                     <p>Status: {status.online ?
                         <span className="font-bold text-green-500">Online</span> : 'Offline'}</p>
