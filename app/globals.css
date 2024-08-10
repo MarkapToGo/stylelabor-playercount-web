@@ -268,14 +268,19 @@ img {
   margin-top: 1rem;
 }
 
+
 .last-7-days-box {
   width: 100%;
   height: 400px; /* Match the height of the chart box */
   position: relative;
-  background-color: #f9f9f9;
+  background-color: #333333; /* Match the background color of the chart box */
   border-radius: 0.5rem;
   padding: 1rem;
   margin-top: 1rem;
+  display: flex; /* Use flexbox to center the text */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  color: antiquewhite; /* Text color */
 }
 
 .beta-label {

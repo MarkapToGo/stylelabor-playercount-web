@@ -176,9 +176,8 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                     <PlayerChart data={playerData} />
                 </div>
                 <div className="last-7-days-box text-center">
-                    <span className="beta-label">BETA</span>
-                    <p className="text-light-green">Average Players (Last 7 Days): {averagePlayers.toFixed(2)}</p>
-                    <p className="text-light-green">Best Server (Last 7 Days): {bestServer}</p>
+                    <p>Average Players (Last 7 Days): {averagePlayers.toFixed(2)}</p>
+                    <p>Best Server (Last 7 Days): {bestServer}</p>
                 </div>
             </div>
         </div>
