@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import ServerStatus from '../components/ServerStatus';
 import LoginForm from '../components/LoginForm';
 import Image from 'next/image';
+import Cookies from 'js-cookie';
 
 export default function Home() {
     const [serverIps, setServerIps] = useState<string[]>([]);
@@ -14,8 +15,14 @@ export default function Home() {
 
     useEffect(() => {
         const savedServerIps = localStorage.getItem('serverIps');
+        const savedIsLoggedIn = Cookies.get('isLoggedIn');
+
         if (savedServerIps) {
             setServerIps(JSON.parse(savedServerIps));
+        }
+
+        if (savedIsLoggedIn === 'true') {
+            setIsLoggedIn(true);
         }
     }, []);
 
@@ -32,6 +39,11 @@ export default function Home() {
         if (event.key === 'Enter') {
             handleAddServerIp();
         }
+    };
+
+    const handleLogin = () => {
+        setIsLoggedIn(true);
+        Cookies.set('isLoggedIn', 'true', { expires: 7 }); // Cookie expires in 7 days
     };
 
     return (
@@ -61,7 +73,7 @@ export default function Home() {
                     </div>
                 </>
             ) : (
-                <LoginForm setIsLoggedIn={setIsLoggedIn} />
+                <LoginForm setIsLoggedIn={handleLogin} />
             )}
         </main>
     );
