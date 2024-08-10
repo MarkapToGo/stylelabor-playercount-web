@@ -58,6 +58,8 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
                 });
             } catch (error) {
                 console.error('Error fetching statuses:', error);
+                 // Replace with actual condition if needed
+                console.log(error);
             } finally {
                 setLoading(false);
             }
@@ -71,14 +73,17 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
     }, [serverIps, setTotalPlayers]);
 
     useEffect(() => {
-        // Calculate the average player count over the last 7 days
+        // Calculate the average player count over the last 7 days or use all available data if no data for the last 7 days
         const now = new Date();
-        const filteredData = playerData.filter(data => new Date(data.time).getTime() > now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        let filteredData = playerData.filter(data => new Date(data.time).getTime() > now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        if (filteredData.length === 0) {
+            filteredData = playerData;
+        }
         const totalPlayers = filteredData.reduce((sum, data) => sum + data.totalPlayers, 0);
         const average = filteredData.length > 0 ? totalPlayers / filteredData.length : 0;
         setAveragePlayers(average);
 
-        // Calculate the best server
+        // Calculate the best server over the last 7 days or use all available data if no data for the last 7 days
         const serverPlayerCounts: { [key: string]: number[] } = {};
         filteredData.forEach(data => {
             if (!serverPlayerCounts[data.serverIp]) {
