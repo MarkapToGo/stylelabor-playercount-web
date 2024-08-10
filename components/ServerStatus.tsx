@@ -1,0 +1,96 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { getServerStatus } from '@/services/minecraftService';
+import Image from 'next/image';
+
+interface ServerStatusProps {
+    serverIps: string[];
+    setServerIps: (ips: string[]) => void;
+    setTotalPlayers: (total: number) => void;
+}
+
+const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, setTotalPlayers }) => {
+    const [statuses, setStatuses] = useState<any[]>([]);
+    const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchStatuses = async () => {
+            try {
+                const data = await Promise.all(serverIps.map(ip => getServerStatus(ip)));
+                setStatuses(data);
+                const totalPlayers = data.reduce((sum, status) => sum + (status.online ? status.players.online : 0), 0);
+                setTotalPlayers(totalPlayers);
+            } catch (error) {
+                console.error('Error fetching statuses:', error);
+            }
+        };
+
+        fetchStatuses().catch(error => console.error('Error in fetchStatuses:', error));
+
+        const intervalId = setInterval(fetchStatuses, 60000); // Refresh every minute
+
+        return () => clearInterval(intervalId); // Clear interval on component unmount
+    }, [serverIps, setTotalPlayers]);
+
+    const copyToClipboard = (serverIp: string, index: number) => {
+        navigator.clipboard.writeText(serverIp)
+            .then(() => {
+                setCopiedIndex(index);
+                setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
+            })
+            .catch(error => console.error('Error copying to clipboard:', error));
+    };
+
+    const getSubdomain = (serverIp: string) => {
+        try {
+            if (!serverIp) throw new Error('Server IP is undefined');
+            const subdomain = serverIp.split('.')[0];
+            return subdomain.charAt(0).toUpperCase() + subdomain.slice(1);
+        } catch (error) {
+            console.error('Error getting subdomain:', error);
+            return 'Unknown';
+        }
+    };
+
+    const handleDelete = (serverIp: string) => {
+        try {
+            if (serverIps.length > 0) {
+                const updatedServerIps = serverIps.filter(ip => ip !== serverIp);
+                setServerIps(updatedServerIps);
+                localStorage.setItem('serverIps', JSON.stringify(updatedServerIps));
+            }
+        } catch (error) {
+            console.error('Error deleting server IP:', error);
+        }
+    };
+
+    if (statuses.length === 0) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            {statuses.map((status, index) => (
+                <div key={index} className="mb-8 relative server-container">
+                    {status.icon && <Image src={status.icon} alt="Server Icon" width={192} height={192} className="mx-auto mb-4 rounded-lg" />}
+                    <button className="delete-button" onClick={() => handleDelete(serverIps[index])}>Delete</button>
+                    <h1 className="text-3xl font-bold">{getSubdomain(serverIps[index])}</h1>
+                    <p className="cursor-pointer" onClick={() => copyToClipboard(serverIps[index], index)}>
+                        Server IP: <span className={`underline ${copiedIndex === index ? 'text-orange' : ''}`}>{copiedIndex === index ? 'Copied!' : serverIps[index]}</span>
+                    </p>
+                    <p>Status: {status.online ? <span className="font-bold text-green-500">Online</span> : 'Offline'}</p>
+                    {status.online && (
+                        <>
+                            <p>Players: {status.players.online}/{status.players.max}</p>
+                            <p>Version: {status.version}</p>
+                            <p className="motd-text">MOTD: <span className="motd-small">{status.motd}</span></p>
+                        </>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export default ServerStatus;

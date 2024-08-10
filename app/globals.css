@@ -8,12 +8,17 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
+}
+
+.text-orange {
+  color: orange;
 }
 
 body {
@@ -24,6 +29,130 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+/* Add styles to improve the image appearance */
+img {
+  image-rendering: optimizeQuality;
+}
+
+/* Add styles for the floating button */
+.fixed {
+  position: fixed;
+}
+
+.bottom-8 {
+  bottom: 2rem;
+}
+
+.right-8 {
+  right: 2rem;
+}
+
+.bg-blue-500 {
+  background-color: #3b82f6;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.text-blue-500 {
+  color: #3b82f6;
+}
+
+.w-16 {
+  width: 4rem;
+}
+
+.h-16 {
+  height: 4rem;
+}
+
+.rounded-full {
+  border-radius: 50%;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.button-hover:hover {
+  background-color: #ffffff;
+  color: #3b82f6;
+}
+
+.button-hover:hover .plus-icon {
+  animation: plus-grow 0.2s forwards;
+}
+
+.plus-icon {
+  transition: transform 0.2s, font-weight 0.2s;
+}
+
+@keyframes plus-grow {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+    font-weight: bold;
+  }
+}
+
+/*  styles for the input field */
+.input-light-blue {
+  background-color: #e0f7fa; /* Light blue background */
+  padding: 0.5rem; /* Padding for better appearance */
+  border: 1px solid #3b82f6; /* Border color matching the button */
+  border-radius: 0.375rem; /* Rounded corners */
+  color: #000000; /* Dark text color for better visibility */
+}
+
+/*  styles for the delete button */
+.delete-button {
+  display: none;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: #ff0000;
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.server-container:hover .delete-button {
+  display: block;
+}
+
+.text-blue-500 {
+  color: #3b82f6;
+}
+
+.button-hover:hover {
+  background-color: #ffffff;
+  color: #3b82f6;
+}
+
+.button-hover:hover {
+  background-color: #ffffff;
+  color: #3b82f6;
+}
+
+.motd-text {
+  font-weight: normal;
+}
+
+.text-orange {
+  color: orange;
+}
+
+.motd-small {
+  font-size: 0.875rem; /* Smaller font size */
+  font-weight: bold;
+  color: #3b82f6; /* Blue color */
 }
 
 @layer utilities {
