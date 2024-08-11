@@ -103,13 +103,14 @@ const ServerStatus: React.FC<ServerStatusProps> = ({ serverIps, setServerIps, se
         setBestServer(bestServerIp);
     }, [playerData]);
 
-    const copyToClipboard = (serverIp: string, index: number) => {
-        navigator.clipboard.writeText(serverIp)
-            .then(() => {
-                setCopiedIndex(index);
-                setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
-            })
-            .catch(error => console.error('Error copying to clipboard:', error));
+    const copyToClipboard = async (serverIp: string, index: number) => {
+        try {
+            await navigator.clipboard.writeText(serverIp);
+            setCopiedIndex(index);
+            setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
+        } catch (error) {
+            console.error('Error copying to clipboard:', error);
+        }
     };
 
     const getSubdomain = (serverIp: string) => {
