@@ -43,7 +43,7 @@ export default function Home() {
 
     const handleLogin = () => {
         setIsLoggedIn(true);
-        Cookies.set('isLoggedIn', 'true', { expires: 7 }); // Cookie expires in 7 days
+        Cookies.set('isLoggedIn', 'true', { expires: 31 }); // Cookie expires in 31 days
     };
 
     return (
